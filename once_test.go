@@ -114,3 +114,44 @@ func TestOnce_DoAgain(t *testing.T) {
 	}
 
 }
+
+func TestOnce_Reset(t *testing.T) {
+	const (
+		Do = iota
+		Reset
+	)
+	tt := []struct {
+		name       string
+		funCalls   []int
+		val        int
+		shouldPass bool
+	}{
+		{"Func calls - [Do, Do]. Expect one", []int{Do, Do}, 1, true},
+		{"Func calls - [Do, Do]. Expect two", []int{Do, Do}, 2, false},
+		{"Func calls - [Do, Reset, Do]. Expect two", []int{Do, Reset, Do}, 2, true},
+		{"Func calls - [Do, Reset, Do]. Expect one", []int{Do, Reset, Do}, 1, false},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			c := new(counter)
+			o := new(sync.Once)
+
+			for i := 0; i < len(tc.funCalls); i++ {
+				switch tc.funCalls[i] {
+				case Do:
+					o.Do(func() { c.Increment() })
+				case Reset:
+					o.Reset()
+				}
+			}
+
+			res := c.Value()
+			if (tc.val == res && tc.shouldPass) || (tc.val != res && !tc.shouldPass) {
+				t.Logf(`Test "%s" paassed`, tc.name)
+			} else {
+				t.Fatalf(`Test "%s" failed. Expected %d received %d`, tc.name, tc.val, res)
+			}
+		})
+	}
+}
