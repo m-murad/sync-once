@@ -2,7 +2,7 @@
 
 sync-once is similar to [sync.Once](https://golang.org/pkg/sync/#Once) of the standard library.
 
-It also has struct `Once` but has two additional methods `DoAgain()` and `Reset()`.
+It also has struct `Once` but has two additional methods `DoForce()` and `Reset()`.
 
 ### why
 
@@ -25,14 +25,14 @@ func main() {
     // This will work similar to the Once.Do(f) method of the sync package. The function f is only called once
     o.Do(loadConfig())
 
-    // To call the function either for the first time or again you need to use the sync.DoAgain() method
+    // To call the function either for the first time or again you need to use the sync.DoForce() method
     // This will execute irrespective of weather o.Do() was called earlier or not and mark o (Once) as done.
-    // Call to o.Do() after o.DoAgain() will not execute the function.
-    o.DoAgain(loadConfig())
+    // Call to o.Do() after o.DoForce() will not execute the function.
+    o.DoForce(loadConfig())
 
     // To reset o (sync.Once) you need to call the Reset() method.
-    // This will mark o as not executed but will no call the Do() method. You need to call Do() or DoAgain() after this.
-    // Calls to Do() and DoAgain() after this will work as described above.
+    // This will mark o as not executed but will no call the Do() method. You need to call Do() or DoForce() after this.
+    // Calls to Do() and DoForce() after this will work as described above.
     o.Reset()
 
 }

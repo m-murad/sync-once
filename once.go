@@ -18,9 +18,9 @@ func (o *Once) Do(f func()) {
 	}
 }
 
-// DoAgain will execute the function even if Do has already been called on Once.
-// DoAgain will not call f directly because that will not be a thread safe call.
-func (o *Once) DoAgain(f func()) {
+// DoForce will execute the function even if Do has already been called on Once.
+// It will not call f directly because that will not be a thread safe call.
+func (o *Once) DoForce(f func()) {
 	atomic.StoreUint32(&o.done, 0)
 	o.doSlow(f)
 }

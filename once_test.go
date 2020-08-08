@@ -55,10 +55,10 @@ func TestOnce_Do(t *testing.T) {
 	}
 }
 
-func TestOnce_DoAgain(t *testing.T) {
+func TestOnce_DoForce(t *testing.T) {
 	const (
 		Do = iota
-		DoAgain
+		DoForce
 	)
 	tt := []struct {
 		name       string
@@ -66,28 +66,28 @@ func TestOnce_DoAgain(t *testing.T) {
 		val        int
 		shouldPass bool
 	}{
-		{"Func calls - [DoAgain]. Expect one", []int{DoAgain}, 1, true},
-		{"Func calls - [DoAgain]. Expect two", []int{DoAgain}, 2, false},
+		{"Func calls - [DoForce]. Expect one", []int{DoForce}, 1, true},
+		{"Func calls - [DoForce]. Expect two", []int{DoForce}, 2, false},
 
-		{"Func calls - [Do, DoAgain]. Expect one", []int{Do, DoAgain}, 1, false},
-		{"Func calls - [Do, DoAgain]. Expect two", []int{Do, DoAgain}, 2, true},
-		{"Func calls - [DoAgain, Do]. Expect one", []int{DoAgain, Do}, 1, true},
-		{"Func calls - [DoAgain, Do]. Expect two", []int{DoAgain, Do}, 2, false},
-		{"Func calls - [DoAgain, DoAgain]. Expect one", []int{DoAgain, DoAgain}, 1, false},
-		{"Func calls - [DoAgain, DoAgain]. Expect two", []int{DoAgain, DoAgain}, 2, true},
+		{"Func calls - [Do, DoForce]. Expect one", []int{Do, DoForce}, 1, false},
+		{"Func calls - [Do, DoForce]. Expect two", []int{Do, DoForce}, 2, true},
+		{"Func calls - [DoForce, Do]. Expect one", []int{DoForce, Do}, 1, true},
+		{"Func calls - [DoForce, Do]. Expect two", []int{DoForce, Do}, 2, false},
+		{"Func calls - [DoForce, DoForce]. Expect one", []int{DoForce, DoForce}, 1, false},
+		{"Func calls - [DoForce, DoForce]. Expect two", []int{DoForce, DoForce}, 2, true},
 
-		{"Func calls - [DoAgain, Do, Do]. Expect one", []int{DoAgain, Do, Do}, 1, true},
-		{"Func calls - [DoAgain, Do, Do]. Expect three", []int{DoAgain, Do, Do}, 3, false},
+		{"Func calls - [DoForce, Do, Do]. Expect one", []int{DoForce, Do, Do}, 1, true},
+		{"Func calls - [DoForce, Do, Do]. Expect three", []int{DoForce, Do, Do}, 3, false},
 
-		{"Func calls - [Do, DoAgain, Do]. Expect one", []int{Do, DoAgain, Do}, 1, false},
-		{"Func calls - [Do, DoAgain, Do]. Expect two", []int{Do, DoAgain, Do}, 2, true},
-		{"Func calls - [Do, DoAgain, Do]. Expect two", []int{Do, DoAgain, Do}, 3, false},
+		{"Func calls - [Do, DoForce, Do]. Expect one", []int{Do, DoForce, Do}, 1, false},
+		{"Func calls - [Do, DoForce, Do]. Expect two", []int{Do, DoForce, Do}, 2, true},
+		{"Func calls - [Do, DoForce, Do]. Expect two", []int{Do, DoForce, Do}, 3, false},
 
-		{"Func calls - [Do, DoAgain, DoAgain]. Expect three", []int{Do, DoAgain, DoAgain}, 3, true},
-		{"Func calls - [Do, DoAgain, DoAgain]. Expect two", []int{Do, DoAgain, DoAgain}, 2, false},
+		{"Func calls - [Do, DoForce, DoForce]. Expect three", []int{Do, DoForce, DoForce}, 3, true},
+		{"Func calls - [Do, DoForce, DoForce]. Expect two", []int{Do, DoForce, DoForce}, 2, false},
 
-		{"Func calls - [DoAgain, DoAgain, DoAgain]. Expect three", []int{DoAgain, DoAgain, DoAgain}, 3, true},
-		{"Func calls - [DoAgain, DoAgain, DoAgain]. Expect one", []int{DoAgain, DoAgain, DoAgain}, 1, false},
+		{"Func calls - [DoForce, DoForce, DoForce]. Expect three", []int{DoForce, DoForce, DoForce}, 3, true},
+		{"Func calls - [DoForce, DoForce, DoForce]. Expect one", []int{DoForce, DoForce, DoForce}, 1, false},
 	}
 
 	for _, tc := range tt {
@@ -99,8 +99,8 @@ func TestOnce_DoAgain(t *testing.T) {
 				switch tc.funCalls[i] {
 				case Do:
 					o.Do(func() { c.Increment() })
-				case DoAgain:
-					o.DoAgain(func() { c.Increment() })
+				case DoForce:
+					o.DoForce(func() { c.Increment() })
 				}
 			}
 
